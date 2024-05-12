@@ -22,6 +22,32 @@ void (*actions[])() = {
 	board_toggle_number_at_cursor,
 };
 
+int counter = 0;
+unsigned int colors[] = {
+	TFT_BLUE,
+	TFT_GREEN, 
+	TFT_RED,
+	TFT_WHITE,
+	TFT_YELLOW,
+	TFT_PURPLE,
+	TFT_PINK
+};
+const int limit = sizeof(colors) / sizeof(int);
+TFT_HX8357* scr = get_tft();
+
+void init_timer() {
+	sei();
+	TCCR1A = 0;
+	TCCR1B = 0;
+	TCCR1C = 0;
+	TCNT1 = 0;
+	TCCR1A |= (1 << COM1A1) | (1 << COM1A0);
+	TCCR1B |= (1 << CS12) | (1 << CS10) | (1 << WGM12);
+	OCR1A = 15625;
+	TIMSK1 = 0;
+	TIMSK1 |= (1 << OCIE1A);
+}
+
 void setup(void) {
 	randomSeed(analogRead(PA2));
 	board_element* board = get_board();
@@ -31,6 +57,15 @@ void setup(void) {
 	board_find_first_valid_cursor_position();
 	board_init();
 	board_render();
+    // scr->begin();
+	// init_timer();
+	// scr->fillScreen(TFT_CYAN);
+}
+
+ISR(TIMER1_COMPA_vect) {
+	scr->fillScreen(colors[counter]);
+	counter ++;
+	counter %= limit;
 }
 
 void loop() {
