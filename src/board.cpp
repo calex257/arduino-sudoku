@@ -26,7 +26,7 @@ board_element* get_solution() {
 
 void board_init() {
     tft.begin();
-    tft.setRotation(0);
+    tft.setRotation(2);
     tft.fillScreen(TFT_BLACK);
 }
 
@@ -44,99 +44,84 @@ boolean board_check_tile_at_cursor() {
     return board[current_row * BOARD_WIDTH + current_col].number == 0 || board[current_row * BOARD_WIDTH + current_col].number == solution[current_row * BOARD_WIDTH + current_col].number;
 }
 
-void board_move_cursor_left() {
+bool board_move_cursor_left() {
     board_cursor* current_cursor = get_cursor();
     uint8_t current_col = current_cursor->col;
     uint8_t current_row = current_cursor->row;
     if (current_col == 0) {
-        return;
+        return false;
     }
-    for (int i = current_col - 1; i >= 0; i--) {
-        if (board[current_row * BOARD_WIDTH + i].is_fixed == 0) {
-            board[current_row * BOARD_WIDTH + current_col].is_cursor_on = 0;
-            current_col = i;
-            board[current_row * BOARD_WIDTH + i].is_cursor_on = 1;
-            break;
-        }
-    }
+    board[current_row * BOARD_WIDTH + current_col].is_cursor_on = 0;
+    current_col --;
+    board[current_row * BOARD_WIDTH + current_col].is_cursor_on = 1;
     if (current_col != current_cursor->col && !board_check_tile_at_cursor()) {
         board_set_tile_as_wrong();
     }
     set_cursor(current_row, current_col);
+    return true;
 }
 
-void board_move_cursor_right() {
+bool board_move_cursor_right() {
     board_cursor* current_cursor = get_cursor();
     uint8_t current_col = current_cursor->col;
     uint8_t current_row = current_cursor->row;
     if (current_col == BOARD_WIDTH - 1) {
-        return;
+        return false;
     }
-    for (int i = current_col + 1; i < BOARD_WIDTH; i++) {
-        if (board[current_row * BOARD_WIDTH + i].is_fixed == 0) {
-            board[current_row * BOARD_WIDTH + current_col].is_cursor_on = 0;
-            current_col = i;
-            board[current_row * BOARD_WIDTH + i].is_cursor_on = 1;
-            break;
-        }
-    }
+    board[current_row * BOARD_WIDTH + current_col].is_cursor_on = 0;
+    current_col ++;
+    board[current_row * BOARD_WIDTH + current_col].is_cursor_on = 1;
     if (current_col != current_cursor->col && !board_check_tile_at_cursor()) {
         board_set_tile_as_wrong();
     }
     set_cursor(current_row, current_col);
+    return true;
 }
 
-void board_move_cursor_up() {
+bool board_move_cursor_up() {
     board_cursor* current_cursor = get_cursor();
     uint8_t current_col = current_cursor->col;
     uint8_t current_row = current_cursor->row;
     if (current_row == 0) {
-        return;
+        return false;
     }
-    for (int i = current_row - 1; i >= 0; i--) {
-        if (board[i * BOARD_WIDTH + current_col].is_fixed == 0) {
-            board[current_row * BOARD_WIDTH + current_col].is_cursor_on = 0;
-            current_row = i;
-            board[i * BOARD_WIDTH + current_col].is_cursor_on = 1;
-            break;
-        }
-    }
+    board[current_row * BOARD_WIDTH + current_col].is_cursor_on = 0;
+    current_row --;
+    board[current_row * BOARD_WIDTH + current_col].is_cursor_on = 1;
     if (current_row != current_cursor->row && !board_check_tile_at_cursor()) {
         board_set_tile_as_wrong();
     }
     set_cursor(current_row, current_col);
+    return true;
 }
 
-void board_move_cursor_down() {
+bool board_move_cursor_down() {
     board_cursor* current_cursor = get_cursor();
     uint8_t current_col = current_cursor->col;
     uint8_t current_row = current_cursor->row;
     if (current_row == BOARD_WIDTH - 1) {
-        return;
+        return false;
     }
-    for (int i = current_row + 1; i < BOARD_WIDTH; i++) {
-        if (board[i * BOARD_WIDTH + current_col].is_fixed == 0) {
-            board[current_row * BOARD_WIDTH + current_col].is_cursor_on = 0;
-            current_row = i;
-            board[i * BOARD_WIDTH + current_col].is_cursor_on = 1;
-            break;
-        }
-    }
+    board[current_row * BOARD_WIDTH + current_col].is_cursor_on = 0;
+    current_row ++;
+    board[current_row * BOARD_WIDTH + current_col].is_cursor_on = 1;
     if (current_row != current_cursor->row && !board_check_tile_at_cursor()) {
         board_set_tile_as_wrong();
     }
     set_cursor(current_row, current_col);
+    return true;
 }
 
-void board_toggle_number_at_cursor() {
+bool board_toggle_number_at_cursor() {
     board_cursor* current_cursor = get_cursor();
     uint8_t current_col = current_cursor->col;
     uint8_t current_row = current_cursor->row;
     if (board[current_row * BOARD_WIDTH + current_col].is_fixed == 1) {
-        return;
+        return false;
     }
     board[current_row * BOARD_WIDTH + current_col].number = (board[current_row * BOARD_WIDTH + current_col].number + 1) % 10;
     board[current_row * BOARD_WIDTH + current_col].is_wrong = 0;
+    return true;
 }
 
 void board_draw_grid_outline() {
@@ -163,7 +148,7 @@ void board_draw_numbers() {
             if (elem.number != 0) {
                 tft.drawNumber(elem.number, x_value, y_value, 4);
             }
-            else if (elem.is_cursor_on == 1) {
+            else if (!elem.is_fixed && elem.is_cursor_on == 1) {
                 tft.drawChar('_', x_value, y_value, 4);
             }
         }
