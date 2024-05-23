@@ -2,6 +2,8 @@
 #define BOARD_H
 
 #include "TFT_HX8357.h"
+#include "difficulty.h"
+#include "element.h"
 
 #define SCREEN_WIDTH 320
 #define BOARD_WIDTH  9
@@ -15,13 +17,28 @@
 #define TEXT_FONT_HEIGHT 26
 #define WRONG_TEXT_COLOR TFT_RED
 
-typedef struct {
-    unsigned padding : 1;
-    unsigned is_cursor_on : 1;
-    unsigned is_wrong : 1;
-    unsigned is_fixed : 1;
-    unsigned number : 4;
-} board_element;
+// #define SOLUTIONS
+// #define NR_BOARDS 30
+// #include "board.h"
+
+// enum board_difficulty{
+//     DIFF_EASY,
+//     DIFF_MEDIUM,
+//     DIFF_HARD,
+//     DIFF_VERY_HARD,
+//     DIFF_INSANE,
+//     DIFF_INHUMAN
+// };
+
+// typedef struct {
+//     unsigned padding : 1;
+//     unsigned is_cursor_on : 1;
+//     unsigned is_wrong : 1;
+//     unsigned is_fixed : 1;
+//     unsigned number : 4;
+// } board_element;
+
+
 
 static inline uint16_t get_fgcolor_from_element(board_element elem) {
     return elem.is_fixed ? FIXED_TEXT_COLOR : (elem.is_wrong ? WRONG_TEXT_COLOR : (elem.is_cursor_on ? CURSOR_TEXT_COLOR : ADDED_TEXT_COLOR));
@@ -30,7 +47,9 @@ static inline uint16_t get_fgcolor_from_element(board_element elem) {
 board_element* get_board();
 board_element* get_solution();
 TFT_HX8357* get_tft();
-void board_init();
+void tft_init();
+void board_init(board_difficulty diff);
+void generate_board(board_element *board, board_element *solution, board_difficulty diff);
 void board_draw_grid_outline();
 void board_draw_numbers();
 void board_render();

@@ -19,6 +19,20 @@ const int button_flags[5] = {
     0x1, 0x2, 0x4, 0x8, 0x10
 };
 
+void handle_buttons();
+
+bool action_button_up();
+
+bool action_button_center();
+
+bool action_button_down();
+
+bool action_button_left();
+
+bool action_button_right();
+
+void transition_to_game_state();
+
 bool check_button_flag_is_set(int flag);
 
 void set_button_flag(int flag);

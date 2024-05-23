@@ -2,6 +2,8 @@
 #include "TFT_HX8357.h"
 #include "board.h"
 #include "cursor.h"
+#include "difficulty.h"
+#include "element.h"
 
 const int x_padding = (SCREEN_WIDTH / 9 - TEXT_FONT_HEIGHT / 2) / 2;
 const int y_padding = (SCREEN_WIDTH / 9 - TEXT_FONT_HEIGHT) / 2;
@@ -24,10 +26,15 @@ board_element* get_solution() {
     return (board_element*)solution;
 }
 
-void board_init() {
+void tft_init() {
     tft.begin();
     tft.setRotation(2);
     tft.fillScreen(TFT_BLACK);
+}
+
+void board_init(board_difficulty difficulty) {
+    generate_board(board, solution, difficulty);
+    board_find_first_valid_cursor_position();
 }
 
 void board_set_tile_as_wrong() {
@@ -58,6 +65,7 @@ bool board_move_cursor_left() {
         board_set_tile_as_wrong();
     }
     set_cursor(current_row, current_col);
+    board_render();
     return true;
 }
 
@@ -75,6 +83,7 @@ bool board_move_cursor_right() {
         board_set_tile_as_wrong();
     }
     set_cursor(current_row, current_col);
+    board_render();
     return true;
 }
 
@@ -92,6 +101,7 @@ bool board_move_cursor_up() {
         board_set_tile_as_wrong();
     }
     set_cursor(current_row, current_col);
+    board_render();
     return true;
 }
 
@@ -109,6 +119,7 @@ bool board_move_cursor_down() {
         board_set_tile_as_wrong();
     }
     set_cursor(current_row, current_col);
+    board_render();
     return true;
 }
 
@@ -121,6 +132,7 @@ bool board_toggle_number_at_cursor() {
     }
     board[current_row * BOARD_WIDTH + current_col].number = (board[current_row * BOARD_WIDTH + current_col].number + 1) % 10;
     board[current_row * BOARD_WIDTH + current_col].is_wrong = 0;
+    board_render();
     return true;
 }
 

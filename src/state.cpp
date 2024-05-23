@@ -1,6 +1,6 @@
 #include "state.h"
 
-static int state = 0;
+static volatile int state = 0;
 
 int get_state() {
     return state;

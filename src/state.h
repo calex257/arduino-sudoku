@@ -1,8 +1,10 @@
 #ifndef STATE_H
 #define STATE_H
 
-#define GAME_STATE 0
-#define MENU_STATE 1
+#define MENU_STATE 0
+#define GAME_STATE 1
+#define WIN_STATE 2
+#define LOSE_STATE 3
 
 int get_state();
 void set_state(int value);

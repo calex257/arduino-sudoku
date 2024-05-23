@@ -8,6 +8,12 @@
 
 TM1637Display* get_display();
 
+void enable_timer_interrupt(); 
+
+void disable_timer_interrupt(); 
+
+void handle_timer();
+
 int get_counter();
 
 int get_second_counter_value();
