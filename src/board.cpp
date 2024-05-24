@@ -4,6 +4,9 @@
 #include "cursor.h"
 #include "difficulty.h"
 #include "element.h"
+#include "led.h"
+#include "state.h"
+#include "buttons.h"
 
 const int x_padding = (SCREEN_WIDTH / 9 - TEXT_FONT_HEIGHT / 2) / 2;
 const int y_padding = (SCREEN_WIDTH / 9 - TEXT_FONT_HEIGHT) / 2;
@@ -65,8 +68,7 @@ bool board_move_cursor_left() {
         board_set_tile_as_wrong();
     }
     set_cursor(current_row, current_col);
-    board_update();
-    // board_render();
+    board_update(true);
     return true;
 }
 
@@ -84,8 +86,7 @@ bool board_move_cursor_right() {
         board_set_tile_as_wrong();
     }
     set_cursor(current_row, current_col);
-    // board_render();
-    board_update();
+    board_update(true);
     return true;
 }
 
@@ -103,8 +104,7 @@ bool board_move_cursor_up() {
         board_set_tile_as_wrong();
     }
     set_cursor(current_row, current_col);
-    // board_render();
-    board_update();
+    board_update(true);
     return true;
 }
 
@@ -122,8 +122,7 @@ bool board_move_cursor_down() {
         board_set_tile_as_wrong();
     }
     set_cursor(current_row, current_col);
-    // board_render();
-    board_update();
+    board_update(true);
     return true;
 }
 
@@ -136,8 +135,7 @@ bool board_toggle_number_at_cursor() {
     }
     board[current_row * BOARD_WIDTH + current_col].number = (board[current_row * BOARD_WIDTH + current_col].number + 1) % 10;
     board[current_row * BOARD_WIDTH + current_col].is_wrong = 0;
-    // board_render();
-    board_update();
+    board_update(false);
     return true;
 }
 
@@ -187,16 +185,17 @@ void board_find_first_valid_cursor_position() {
     }
 }
 
-boolean board_check_game_complete() {
+int board_count_wrong_numbers() {
+    int counter = 0;
     for (int i = 0; i < BOARD_WIDTH; i++) {
         for (int j = 0; j < BOARD_WIDTH; j++) {
             int index = i * BOARD_WIDTH + j;
-            if (board[index].number != solution[index].number) {
-                return false;
+            if (board[index].is_fixed == 0 && board[index].number != solution[index].number) {
+                counter ++;
             }
         }
     }
-    return true;
+    return counter;
 }
 
 void draw_element_at_position(int row, int col) {
@@ -218,7 +217,7 @@ void draw_element_at_position(int row, int col) {
     }
 }
 
-void board_update() {
+void board_update(boolean count_wrong_numbers) {
     int prev_row, prev_col, row, col;
     board_cursor* prev_cursor = get_prev_cursor();
     prev_row = prev_cursor->row;
@@ -228,6 +227,14 @@ void board_update() {
     row = cursor->row;
     col = cursor->col;
     draw_element_at_position(row, col);
+    if (count_wrong_numbers) {
+        int wrong_count = board_count_wrong_numbers();
+        set_wrong_count(wrong_count);
+        if (wrong_count == 0) {
+            // set_state(WIN_STATE);
+            transition_to_final_state(WIN_STATE);
+        }
+    }
 }
 
 void board_show_winning_screen() {

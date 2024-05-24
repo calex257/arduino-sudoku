@@ -43,4 +43,6 @@ void clear_button_flag_register();
 
 void buttons_init();
 
+void transition_to_final_state(int state);
+
 #endif

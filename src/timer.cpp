@@ -1,6 +1,7 @@
 #include "Arduino.h"
 #include "timer.h"
 #include "state.h"
+#include "buttons.h"
 
 static TM1637Display display(CLK, DIO);
 static volatile int second_counter;
@@ -78,7 +79,7 @@ void update_display() {
 void handle_timer() {
 	if (timer_is_modified) {
 		if (second_counter < 0) {
-            set_state(LOSE_STATE);
+			transition_to_final_state(LOSE_STATE);
 		}
 		else {
 			update_display();

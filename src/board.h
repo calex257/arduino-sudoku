@@ -60,7 +60,7 @@ bool board_move_cursor_down();
 bool board_toggle_number_at_cursor();
 void board_find_first_valid_cursor_position();
 void board_show_winning_screen();
-void board_update();
+void board_update(boolean count_wrong_numbers);
 void draw_element_at_position(int row, int col);
-boolean board_check_game_complete();
+int board_count_wrong_numbers();
 #endif

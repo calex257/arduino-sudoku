@@ -8,16 +8,16 @@
 #define EASY
 #define MEDIUM
 #define HARD
-#define VERY_HARD
-#define INSANE
-#define INHUMAN
+// #define VERY_HARD
+// #define INSANE
+// #define INHUMAN
 #define SOLUTIONS
 #include "generator.h"
 #include "buttons.h"
 #include "timer.h"
 #include "menu.h"
 #include "state.h"
-
+#include "led.h"
 #define BUZZER_PIN A0
 
 #define RED_PIN A1
@@ -50,21 +50,25 @@ void setup(void) {
 	// board_render();
 	// timer_init();
 	timer_clear();
+	init_led_pwm();
+	BLUE_VALUE = 255;
+	RED_VALUE = 0;
+	GREEN_VALUE = 0;
 	buttons_init();
 	display_menu();
 	set_state(MENU_STATE);
 	Serial.begin(9600);
 	pinMode(BUZZER_PIN, OUTPUT);
-	pinMode(RED_PIN, OUTPUT);
-	pinMode(GREEN_PIN, OUTPUT);
-	pinMode(BLUE_PIN, OUTPUT);
-	set_counter(300);
+	// pinMode(RED_PIN, OUTPUT);
+	// pinMode(GREEN_PIN, OUTPUT);
+	// pinMode(BLUE_PIN, OUTPUT);
+	// set_counter(300);
 }
 
 void loop() {
-	analogWrite(RED_PIN, 255);
-	analogWrite(GREEN_PIN, 255);
-	analogWrite(BLUE_PIN, 255);
+	// analogWrite(RED_PIN, 255);
+	// analogWrite(GREEN_PIN, 255);
+	// analogWrite(BLUE_PIN, 255);
 
 	int state = get_state();
 	handle_buttons();
@@ -76,8 +80,7 @@ void loop() {
 			handle_timer();
 			break;
 		case LOSE_STATE:
-			setup();
-			// set_state(MENU_STATE);
+		case WIN_STATE:
 			break;
 	}
 }

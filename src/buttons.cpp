@@ -5,6 +5,7 @@
 #include "menu.h"
 #include "timer.h"
 #include "generator.h"
+#include "led.h"
 
 #define ON_UP_BUTTON_PRESS ISR(INT1_vect)
 #define ON_RIGHT_BUTTON_PRESS ISR(INT2_vect)
@@ -32,6 +33,9 @@ bool action_button_up() {
 	case GAME_STATE:
 		board_move_cursor_up();
 		break;
+	case WIN_STATE:
+	case LOSE_STATE:
+		setup();
 	default:
 		break;
 	}
@@ -46,6 +50,9 @@ bool action_button_center() {
 	case GAME_STATE:
 		board_toggle_number_at_cursor();
 		break;
+	case WIN_STATE:
+	case LOSE_STATE:
+		setup();
 	default:
 		break;
 	}
@@ -60,6 +67,9 @@ bool action_button_down() {
 	case GAME_STATE:
 		board_move_cursor_down();
 		break;
+	case WIN_STATE:
+	case LOSE_STATE:
+		setup();
 	default:
 		break;
 	}
@@ -74,6 +84,9 @@ bool action_button_left() {
 	case GAME_STATE:
 		board_move_cursor_left();
 		break;
+	case WIN_STATE:
+	case LOSE_STATE:
+		setup();
 	default:
 		break;
 	}
@@ -88,6 +101,9 @@ bool action_button_right() {
 	case GAME_STATE:
 		board_move_cursor_right();
 		break;
+	case WIN_STATE:
+	case LOSE_STATE:
+		setup();
 	default:
 		break;
 	}
@@ -97,9 +113,28 @@ void transition_to_game_state() {
 	board_difficulty difficulty = (board_difficulty) get_menu_cursor_position();
 	set_state(GAME_STATE);
 	set_counter(difficulty_times[difficulty]);
+	set_led_increment(150.0 / missing_squares_per_difficulty[difficulty]);
+	BLUE_VALUE = 0;
+	RED_VALUE = 150;
+	GREEN_VALUE = 0;
 	timer_init();
 	board_init(difficulty);
 	board_render();
+}
+
+void transition_to_final_state(int state) {
+	TFT_HX8357* scr = get_tft();
+	disable_timer_interrupt();
+	if (state == WIN_STATE) {
+		scr->fillScreen(TFT_GREEN);
+		int initial_time = get_second_counter_value();
+		int actual_time = get_counter();
+		set_counter(initial_time - actual_time);
+		update_display();
+	} else {
+		scr->fillScreen(TFT_RED);
+	}
+	set_state(state);
 }
 
 void handle_buttons() {

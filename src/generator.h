@@ -12,6 +12,12 @@ const int difficulty_times[] = {
     900,
 };
 
+const int missing_squares_per_difficulty[] = {
+    19,
+    28,
+    37,
+};
+
 void generate_board(board_element *board, board_element *solution, board_difficulty diff);
 
 #endif
