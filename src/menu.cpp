@@ -41,7 +41,7 @@ void handle_menu() {
     if (!cursor_has_changed) {
         return;
     }
-    scr->setTextColor(TFT_RED, TFT_GREEN);
+    scr->setTextColor(TFT_RED, TFT_WHITE);
     scr->drawString(difficulty_prompts[prev_cursor], 20, 50 * prev_cursor + 100, 4);
     scr->setTextColor(TFT_RED, TFT_YELLOW);
     scr->drawString(difficulty_prompts[cursor], 20, 50 * cursor + 100, 4);

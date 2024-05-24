@@ -41,13 +41,15 @@ TFT_HX8357* scr = get_tft();
 
 void setup(void) {
 	randomSeed(analogRead(PA2));
+	srand(analogRead(PA2));
 	// board_element* board = get_board();
 	// board_element* solution = get_solution();
 	// generate_board(board, solution, DIFF_HARD);
 	// board_find_first_valid_cursor_position();
 	tft_init();
 	// board_render();
-	timer_init();
+	// timer_init();
+	timer_clear();
 	buttons_init();
 	display_menu();
 	set_state(MENU_STATE);
@@ -72,6 +74,10 @@ void loop() {
 			break;
 		case GAME_STATE:
 			handle_timer();
+			break;
+		case LOSE_STATE:
+			setup();
+			// set_state(MENU_STATE);
 			break;
 	}
 }

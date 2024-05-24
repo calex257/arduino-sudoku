@@ -33,6 +33,10 @@ void timer_init() {
     enable_timer_interrupt();
 }
 
+void timer_clear() {
+	display.clear();
+}
+
 TM1637Display* get_display() {
     return &display;
 }

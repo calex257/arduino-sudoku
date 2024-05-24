@@ -20,6 +20,8 @@ int get_second_counter_value();
 
 void timer_init();
 
+void timer_clear();
+
 void set_counter(int seconds);
 
 bool get_timer_is_modified();

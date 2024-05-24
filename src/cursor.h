@@ -8,5 +8,6 @@ typedef struct {
 
 void set_cursor(uint8_t row, uint8_t col);
 board_cursor* get_cursor();
+board_cursor* get_prev_cursor();
 
 #endif

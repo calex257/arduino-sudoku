@@ -65,7 +65,8 @@ bool board_move_cursor_left() {
         board_set_tile_as_wrong();
     }
     set_cursor(current_row, current_col);
-    board_render();
+    board_update();
+    // board_render();
     return true;
 }
 
@@ -83,7 +84,8 @@ bool board_move_cursor_right() {
         board_set_tile_as_wrong();
     }
     set_cursor(current_row, current_col);
-    board_render();
+    // board_render();
+    board_update();
     return true;
 }
 
@@ -101,7 +103,8 @@ bool board_move_cursor_up() {
         board_set_tile_as_wrong();
     }
     set_cursor(current_row, current_col);
-    board_render();
+    // board_render();
+    board_update();
     return true;
 }
 
@@ -119,7 +122,8 @@ bool board_move_cursor_down() {
         board_set_tile_as_wrong();
     }
     set_cursor(current_row, current_col);
-    board_render();
+    // board_render();
+    board_update();
     return true;
 }
 
@@ -132,7 +136,8 @@ bool board_toggle_number_at_cursor() {
     }
     board[current_row * BOARD_WIDTH + current_col].number = (board[current_row * BOARD_WIDTH + current_col].number + 1) % 10;
     board[current_row * BOARD_WIDTH + current_col].is_wrong = 0;
-    board_render();
+    // board_render();
+    board_update();
     return true;
 }
 
@@ -150,19 +155,20 @@ void board_draw_grid_outline() {
 void board_draw_numbers() {
     for (int i = 0; i < BOARD_WIDTH; i++) {
         for (int j = 0; j < BOARD_WIDTH; j++) {
-            uint8_t board_index = i * BOARD_WIDTH + j;
-            board_element elem = board[board_index];
-            uint16_t x_value = j * SCREEN_WIDTH / 9 + x_padding;
-            uint16_t y_value = i * SCREEN_WIDTH / 9 + y_padding;
-            uint16_t fgcolor = get_fgcolor_from_element(elem);
-            uint16_t bgcolor = elem.is_cursor_on ? CURSOR_COLOR : NO_CURSOR_COLOR;
-            tft.setTextColor(fgcolor, bgcolor);
-            if (elem.number != 0) {
-                tft.drawNumber(elem.number, x_value, y_value, 4);
-            }
-            else if (!elem.is_fixed && elem.is_cursor_on == 1) {
-                tft.drawChar('_', x_value, y_value, 4);
-            }
+            draw_element_at_position(i, j);
+            // uint8_t board_index = i * BOARD_WIDTH + j;
+            // board_element elem = board[board_index];
+            // uint16_t x_value = j * SCREEN_WIDTH / 9 + x_padding;
+            // uint16_t y_value = i * SCREEN_WIDTH / 9 + y_padding;
+            // uint16_t fgcolor = get_fgcolor_from_element(elem);
+            // uint16_t bgcolor = elem.is_cursor_on ? CURSOR_COLOR : NO_CURSOR_COLOR;
+            // tft.setTextColor(fgcolor, bgcolor);
+            // if (elem.number != 0) {
+            //     tft.drawNumber(elem.number, x_value, y_value, 4);
+            // }
+            // else if (!elem.is_fixed && elem.is_cursor_on == 1) {
+            //     tft.drawChar('_', x_value, y_value, 4);
+            // }
         }
     }
 }
@@ -191,6 +197,37 @@ boolean board_check_game_complete() {
         }
     }
     return true;
+}
+
+void draw_element_at_position(int row, int col) {
+    uint8_t board_index = row * BOARD_WIDTH + col;
+    board_element elem = board[board_index];
+    uint16_t x_value = col * SCREEN_WIDTH / 9 + x_padding;
+    uint16_t y_value = row * SCREEN_WIDTH / 9 + y_padding;
+    uint16_t fgcolor = get_fgcolor_from_element(elem);
+    uint16_t bgcolor = elem.is_cursor_on ? CURSOR_COLOR : NO_CURSOR_COLOR;
+    tft.setTextColor(fgcolor, bgcolor);
+    if (elem.number != 0) {
+        tft.drawNumber(elem.number, x_value, y_value, 4);
+    }
+    else if (!elem.is_fixed && elem.is_cursor_on == 1) {
+        tft.drawChar('_', x_value, y_value, 4);
+    } else {
+        tft.setTextColor(fgcolor, TFT_WHITE);
+        tft.drawString("   ", x_value, y_value, 4);
+    }
+}
+
+void board_update() {
+    int prev_row, prev_col, row, col;
+    board_cursor* prev_cursor = get_prev_cursor();
+    prev_row = prev_cursor->row;
+    prev_col = prev_cursor->col;
+    draw_element_at_position(prev_row, prev_col);
+    board_cursor* cursor = get_cursor();
+    row = cursor->row;
+    col = cursor->col;
+    draw_element_at_position(row, col);
 }
 
 void board_show_winning_screen() {

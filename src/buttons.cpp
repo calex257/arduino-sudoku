@@ -4,6 +4,7 @@
 #include "state.h"
 #include "menu.h"
 #include "timer.h"
+#include "generator.h"
 
 #define ON_UP_BUTTON_PRESS ISR(INT1_vect)
 #define ON_RIGHT_BUTTON_PRESS ISR(INT2_vect)
@@ -95,8 +96,10 @@ bool action_button_right() {
 void transition_to_game_state() {
 	board_difficulty difficulty = (board_difficulty) get_menu_cursor_position();
 	set_state(GAME_STATE);
+	set_counter(difficulty_times[difficulty]);
 	timer_init();
 	board_init(difficulty);
+	board_render();
 }
 
 void handle_buttons() {

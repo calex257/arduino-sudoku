@@ -24,7 +24,7 @@ void generate_medium_board(board_element *board, board_element *solution)
 
 void generate_hard_board(board_element *board, board_element *solution)
 {
-    int index = random(0, NR_BOARDS);
+    int index = rand() % NR_BOARDS;
     board_element *selected_board = hard_boards[index];
     memcpy(board, selected_board, 81 * sizeof(board_element));
     board_element *selected_solution = hard_boards_solutions[index];
