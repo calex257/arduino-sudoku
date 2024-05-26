@@ -5,6 +5,7 @@
 #include "TFT_HX8357.h"
 #include "board.h"
 #include "cursor.h"
+#include "buzzer.h"
 #define EASY
 #define MEDIUM
 #define HARD
@@ -40,6 +41,8 @@ const int limit = sizeof(colors) / sizeof(int);
 TFT_HX8357* scr = get_tft();
 
 void setup(void) {
+	pinMode(BUZZER_PIN, OUTPUT);
+	buzzer_intro_song();
 	randomSeed(analogRead(PA2));
 	srand(analogRead(PA2));
 	// board_element* board = get_board();
@@ -58,7 +61,6 @@ void setup(void) {
 	display_menu();
 	set_state(MENU_STATE);
 	Serial.begin(9600);
-	pinMode(BUZZER_PIN, OUTPUT);
 	// pinMode(RED_PIN, OUTPUT);
 	// pinMode(GREEN_PIN, OUTPUT);
 	// pinMode(BLUE_PIN, OUTPUT);
@@ -77,6 +79,10 @@ void loop() {
 			handle_menu();
 			break;
 		case GAME_STATE:
+			if (get_wrong_flag()) {
+				buzzer_error_chime();
+				set_wrong_flag(0);
+			}
 			handle_timer();
 			break;
 		case LOSE_STATE:

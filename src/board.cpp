@@ -11,7 +11,16 @@
 const int x_padding = (SCREEN_WIDTH / 9 - TEXT_FONT_HEIGHT / 2) / 2;
 const int y_padding = (SCREEN_WIDTH / 9 - TEXT_FONT_HEIGHT) / 2;
 
+static int wrong_flag = 0;
 static TFT_HX8357 tft = TFT_HX8357();
+
+int get_wrong_flag() {
+    return wrong_flag;
+}
+
+void set_wrong_flag(int value) {
+    wrong_flag = value;
+}
 
 TFT_HX8357* get_tft() {
     return &tft;
@@ -45,6 +54,7 @@ void board_set_tile_as_wrong() {
     uint8_t current_col = current_cursor->col;
     uint8_t current_row = current_cursor->row;
     board[current_row * BOARD_WIDTH + current_col].is_wrong = 1;
+    wrong_flag = 1;
 }
 
 boolean board_check_tile_at_cursor() {

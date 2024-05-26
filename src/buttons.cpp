@@ -6,6 +6,7 @@
 #include "timer.h"
 #include "generator.h"
 #include "led.h"
+#include "buzzer.h"
 
 #define ON_UP_BUTTON_PRESS ISR(INT1_vect)
 #define ON_RIGHT_BUTTON_PRESS ISR(INT2_vect)
@@ -131,8 +132,10 @@ void transition_to_final_state(int state) {
 		int actual_time = get_counter();
 		set_counter(initial_time - actual_time);
 		update_display();
+		buzzer_victory_chant();
 	} else {
 		scr->fillScreen(TFT_RED);
+		buzzer_defeat_cry();
 	}
 	set_state(state);
 }

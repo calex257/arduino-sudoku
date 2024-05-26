@@ -63,4 +63,6 @@ void board_show_winning_screen();
 void board_update(boolean count_wrong_numbers);
 void draw_element_at_position(int row, int col);
 int board_count_wrong_numbers();
+int get_wrong_flag();
+void set_wrong_flag(int value);
 #endif

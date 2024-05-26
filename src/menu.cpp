@@ -3,6 +3,7 @@
 #include "generator.h"
 #include "board.h"
 #include "difficulty.h"
+#include "buzzer.h"
 
 static TFT_HX8357* const scr = get_tft();
 static char cursor = 0;
